@@ -261,47 +261,156 @@ Emotion Detection using Simple Recurrent Neural Networks
 # ABOUT SECTION USING 3 COLUMNS
 # ============================================
 
+# ============================================
+# ABOUT SECTION WITH 3 BEAUTIFUL BOXES
+# ============================================
+
 st.markdown('<div class="card">',
 unsafe_allow_html=True)
 
 st.header("📘 About the Project")
 
+st.write("""
+<div style="
+font-size:22px;
+line-height:1.9;
+color:#37474f;
+margin-bottom:30px;
+">
+
+This AI-powered Mental Health Sentiment Monitoring System
+uses Natural Language Processing (NLP)
+and Simple Recurrent Neural Networks (RNN)
+to analyze emotional sentiment from user text.
+
+</div>
+""", unsafe_allow_html=True)
+
+# ============================================
+# 3 COLUMNS
+# ============================================
+
 col1, col2, col3 = st.columns(3)
+
+# ============================================
+# BOX 1
+# ============================================
 
 with col1:
 
-    st.subheader("🌟 Emotional AI")
+    st.markdown("""
+    <div style="
+    background:rgba(255,255,255,0.85);
+    padding:25px;
+    border-radius:22px;
+    box-shadow:0px 4px 15px rgba(0,0,0,0.12);
+    height:270px;
+    ">
 
-    st.write("""
-    - Detects emotional distress  
-    - Supports early intervention  
-    - Helps emotional wellness monitoring  
-    """)
+    <h2 style="
+    color:#1e3a5f;
+    font-size:30px;
+    ">
+    🌟 Emotional AI
+    </h2>
+
+    <div style="
+    font-size:20px;
+    color:#37474f;
+    line-height:2;
+    ">
+
+    • Detects emotional distress<br>
+
+    • Supports early intervention<br>
+
+    • Helps emotional wellness monitoring
+
+    </div>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+# ============================================
+# BOX 2
+# ============================================
 
 with col2:
 
-    st.subheader("🤖 NLP Applications")
+    st.markdown("""
+    <div style="
+    background:rgba(255,255,255,0.85);
+    padding:25px;
+    border-radius:22px;
+    box-shadow:0px 4px 15px rgba(0,0,0,0.12);
+    height:270px;
+    ">
 
-    st.write("""
-    - Chatbots  
-    - Sentiment Analysis  
-    - Emotion Detection  
-    - Text Classification  
-    """)
+    <h2 style="
+    color:#1e3a5f;
+    font-size:30px;
+    ">
+    🤖 NLP Applications
+    </h2>
+
+    <div style="
+    font-size:20px;
+    color:#37474f;
+    line-height:2;
+    ">
+
+    • Chatbots<br>
+
+    • Sentiment Analysis<br>
+
+    • Emotion Detection<br>
+
+    • Text Classification
+
+    </div>
+
+    </div>
+    """, unsafe_allow_html=True)
+
+# ============================================
+# BOX 3
+# ============================================
 
 with col3:
 
-    st.subheader("🔁 Role of RNN")
+    st.markdown("""
+    <div style="
+    background:rgba(255,255,255,0.85);
+    padding:25px;
+    border-radius:22px;
+    box-shadow:0px 4px 15px rgba(0,0,0,0.12);
+    height:270px;
+    ">
 
-    st.write("""
+    <h2 style="
+    color:#1e3a5f;
+    font-size:30px;
+    ">
+    🔁 Role of RNN
+    </h2>
+
+    <div style="
+    font-size:20px;
+    color:#37474f;
+    line-height:2;
+    ">
+
     RNN processes text sequentially
     and remembers previous words
     using hidden states for better
     understanding of emotions.
-    """)
+
+    </div>
+
+    </div>
+    """, unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
-
 # ============================================
 # INPUT + SAMPLE SECTION
 # ============================================
