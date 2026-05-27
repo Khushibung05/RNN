@@ -1,11 +1,6 @@
 # ============================================
-# app.py
-# AI-Based Mental Health Sentiment Monitoring
-# Streamlit Deployment
-# ============================================
-
-# ============================================
-# IMPORT LIBRARIES
+# BEAUTIFUL MODERN STREAMLIT UI
+# WITH COLUMNS / CARDS / SECTIONS
 # ============================================
 
 import streamlit as st
@@ -15,7 +10,6 @@ import pandas as pd
 import re
 import string
 import plotly.express as px
-import tensorflow as tf
 
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -31,146 +25,165 @@ st.set_page_config(
 )
 
 # ============================================
-# CUSTOM CSS
+# MODERN CSS
 # ============================================
 
 st.markdown("""
 <style>
 
-/* Main App */
+/* Main Background */
 
 .stApp{
     background: linear-gradient(
         135deg,
-        #141e30,
-        #243b55
+        #fff9c4,
+        #e1f5fe,
+        #fce4ec
     );
+    background-attachment: fixed;
+}
+
+/* Remove Header */
+
+header{
+    visibility:hidden;
+}
+
+/* Main Container */
+
+.block-container{
+    padding-top:2rem;
+    padding-bottom:2rem;
 }
 
 /* Main Title */
 
 .main-title{
     text-align:center;
-    font-size:48px;
-    font-weight:bold;
-    color:white;
-    margin-top:20px;
+    font-size:60px;
+    font-weight:800;
+    color:#1e3a5f;
+    margin-bottom:10px;
 }
 
 /* Subtitle */
 
 .sub-title{
     text-align:center;
-    font-size:22px;
-    color:#dddddd;
-    margin-bottom:30px;
+    font-size:28px;
+    color:#546e7a;
+    margin-bottom:40px;
 }
 
-/* Section Box */
+/* Card Style */
 
-.section-box{
-    background: rgba(255,255,255,0.08);
-    padding:25px;
-    border-radius:20px;
+.card{
+    background:rgba(255,255,255,0.75);
+    backdrop-filter:blur(10px);
+    padding:28px;
+    border-radius:25px;
+    box-shadow:0px 6px 20px rgba(0,0,0,0.12);
     margin-bottom:25px;
-    box-shadow:0px 4px 15px rgba(0,0,0,0.3);
-    color:white;
 }
 
-/* Buttons */
+/* Headings */
 
-.stButton > button{
-    width:100%;
-    background:#00c6ff;
-    color:white;
-    border:none;
-    border-radius:10px;
-    height:50px;
-    font-size:20px;
-    font-weight:bold;
+h1,h2,h3,h4{
+    color:#1e3a5f !important;
 }
 
-.stButton > button:hover{
-    background:#0072ff;
-    color:white;
+/* Text */
+
+p, li{
+    color:#37474f;
+    font-size:19px;
+    line-height:1.8;
 }
 
 /* Text Area */
 
 textarea{
-    background-color:white !important;
+    background:white !important;
     color:black !important;
-    border-radius:12px !important;
-    font-size:16px !important;
+    border-radius:18px !important;
+    border:2px solid #90caf9 !important;
+    font-size:20px !important;
+    padding:15px !important;
 }
 
-/* Success Box */
+/* Button */
 
-.stSuccess{
-    border-radius:12px;
+.stButton > button{
+    width:100%;
+    height:60px;
+    border:none;
+    border-radius:18px;
+    background:linear-gradient(
+        135deg,
+        #64b5f6,
+        #ba68c8
+    );
+    color:white;
+    font-size:24px;
+    font-weight:bold;
+    box-shadow:0px 4px 15px rgba(0,0,0,0.2);
 }
 
-/* Warning Box */
+/* Button Hover */
 
-.stWarning{
-    border-radius:12px;
+.stButton > button:hover{
+    transform:scale(1.02);
+    background:linear-gradient(
+        135deg,
+        #42a5f5,
+        #ab47bc
+    );
+}
+
+/* Info Boxes */
+
+.metric-box{
+    background:white;
+    padding:20px;
+    border-radius:18px;
+    text-align:center;
+    box-shadow:0px 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Footer */
+
+.footer{
+    text-align:center;
+    color:#455a64;
+    font-size:18px;
+    margin-top:30px;
 }
 
 </style>
 """, unsafe_allow_html=True)
 
 # ============================================
-# DEBUG CHECK
-# ============================================
-
-st.write("✅ App Started Successfully")
-
-# ============================================
 # LOAD MODEL
 # ============================================
 
-try:
-
-    model = load_model(
-        "mental_health_rnn_model.h5",
-        compile=False
-    )
-
-    st.write("✅ Model Loaded")
-
-except Exception as e:
-
-    st.error(f"Model Loading Error: {e}")
+model = load_model(
+    "mental_health_rnn_model.h5",
+    compile=False
+)
 
 # ============================================
 # LOAD TOKENIZER
 # ============================================
 
-try:
-
-    with open("tokenizer.pkl", "rb") as file:
-        tokenizer = pickle.load(file)
-
-    st.write("✅ Tokenizer Loaded")
-
-except Exception as e:
-
-    st.error(f"Tokenizer Error: {e}")
+with open("tokenizer.pkl", "rb") as file:
+    tokenizer = pickle.load(file)
 
 # ============================================
-# LOAD LABEL ENCODER
+# LOAD ENCODER
 # ============================================
 
-try:
-
-    with open("label_encoder.pkl", "rb") as file:
-        encoder = pickle.load(file)
-
-    st.write("✅ Label Encoder Loaded")
-
-except Exception as e:
-
-    st.error(f"Encoder Error: {e}")
+with open("label_encoder.pkl", "rb") as file:
+    encoder = pickle.load(file)
 
 # ============================================
 # CONSTANTS
@@ -179,7 +192,7 @@ except Exception as e:
 MAX_LENGTH = 50
 
 # ============================================
-# TEXT CLEANING FUNCTION
+# CLEAN TEXT
 # ============================================
 
 def clean_text(text):
@@ -229,90 +242,126 @@ def predict_emotion(text):
     return sentiment, confidence, prediction[0]
 
 # ============================================
-# HEADER SECTION
+# HEADER
 # ============================================
 
-st.markdown(
-    """
-    <div class="main-title">
-    🧠 AI-Based Mental Health Sentiment Monitoring System
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div class="main-title">
+🧠 AI-Based Mental Health Sentiment Monitoring System
+</div>
+""", unsafe_allow_html=True)
 
-st.markdown(
-    """
-    <div class="sub-title">
-    Emotion Detection using Simple Recurrent Neural Networks
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div class="sub-title">
+Emotion Detection using Simple Recurrent Neural Networks
+</div>
+""", unsafe_allow_html=True)
 
 # ============================================
-# ABOUT PROJECT
+# ABOUT SECTION USING 3 COLUMNS
 # ============================================
 
-st.markdown('<div class="section-box">',
+st.markdown('<div class="card">',
 unsafe_allow_html=True)
 
 st.header("📘 About the Project")
 
-st.write("""
-This AI-powered Mental Health Sentiment Monitoring System
-uses Natural Language Processing (NLP)
-and Simple Recurrent Neural Networks (RNN)
-to analyze emotional sentiment from user text.
+col1, col2, col3 = st.columns(3)
 
-### Importance of Emotional AI
-- Helps identify emotional distress
-- Supports early emotional intervention
-- Assists counselors and wellness systems
+with col1:
 
-### NLP Applications
-- Chatbots
-- Sentiment Analysis
-- Emotion Detection
-- Text Classification
+    st.subheader("🌟 Emotional AI")
 
-### Role of RNN
-RNN processes text sequentially and remembers
-previous words using hidden states,
-allowing better understanding of sentence context.
-""")
+    st.write("""
+    - Detects emotional distress  
+    - Supports early intervention  
+    - Helps emotional wellness monitoring  
+    """)
 
-st.markdown('</div>', unsafe_allow_html=True)
+with col2:
 
-# ============================================
-# USER INPUT SECTION
-# ============================================
+    st.subheader("🤖 NLP Applications")
 
-st.markdown('<div class="section-box">',
-unsafe_allow_html=True)
+    st.write("""
+    - Chatbots  
+    - Sentiment Analysis  
+    - Emotion Detection  
+    - Text Classification  
+    """)
 
-st.header("✍ User Text Input")
+with col3:
 
-st.write("### Sample Sentences")
+    st.subheader("🔁 Role of RNN")
 
-st.code("""
-• I feel lonely and stressed lately
-• I am extremely happy today
-• Nobody understands me anymore
-• Life feels beautiful and peaceful
-• I feel mentally exhausted
-""")
-
-user_input = st.text_area(
-    "",
-    height=180,
-    placeholder="Enter your thoughts or feelings here..."
-)
+    st.write("""
+    RNN processes text sequentially
+    and remembers previous words
+    using hidden states for better
+    understanding of emotions.
+    """)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ============================================
-# PREDICTION BUTTON
+# INPUT + SAMPLE SECTION
+# ============================================
+
+left_col, right_col = st.columns([2,1])
+
+# ============================================
+# INPUT COLUMN
+# ============================================
+
+with left_col:
+
+    st.markdown('<div class="card">',
+    unsafe_allow_html=True)
+
+    st.header("✍ Enter Your Thoughts")
+
+    user_input = st.text_area(
+        "",
+        height=250,
+        placeholder="Enter your thoughts or feelings here..."
+    )
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ============================================
+# SAMPLE COLUMN
+# ============================================
+
+with right_col:
+
+    st.markdown('<div class="card">',
+    unsafe_allow_html=True)
+
+    st.header("💭 Sample Inputs")
+
+    st.info("""
+I feel lonely and stressed lately
+""")
+
+    st.info("""
+I am very happy today
+""")
+
+    st.info("""
+Nobody understands me anymore
+""")
+
+    st.info("""
+Life feels beautiful and peaceful
+""")
+
+    st.info("""
+I feel mentally exhausted
+""")
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ============================================
+# BUTTON
 # ============================================
 
 if st.button("🔍 Analyze Emotion"):
@@ -328,147 +377,167 @@ if st.button("🔍 Analyze Emotion"):
         )
 
         # ============================================
-        # OUTPUT SECTION
+        # OUTPUT METRICS
         # ============================================
 
-        st.markdown('<div class="section-box">',
+        st.markdown('<div class="card">',
         unsafe_allow_html=True)
 
-        st.header("📊 Prediction Output")
+        st.header("📊 Prediction Results")
 
-        st.success(
-            f"Emotion Detected: {sentiment}"
-        )
+        m1, m2, m3 = st.columns(3)
 
-        st.info(
-            f"Confidence Score: {confidence:.2f}%"
-        )
+        with m1:
 
-        # Emotional Status
+            st.markdown(f"""
+            <div class="metric-box">
+            <h3>Emotion</h3>
+            <h2>{sentiment}</h2>
+            </div>
+            """, unsafe_allow_html=True)
 
-        if confidence >= 85:
-            emotional_status = "High Confidence Detection"
+        with m2:
 
-        elif confidence >= 60:
-            emotional_status = "Moderate Confidence Detection"
+            st.markdown(f"""
+            <div class="metric-box">
+            <h3>Confidence</h3>
+            <h2>{confidence:.2f}%</h2>
+            </div>
+            """, unsafe_allow_html=True)
 
-        else:
-            emotional_status = "Low Confidence Detection"
+        with m3:
 
-        st.write(
-            f"### Emotional Status: {emotional_status}"
-        )
+            if confidence >= 85:
+                status = "High"
+
+            elif confidence >= 60:
+                status = "Moderate"
+
+            else:
+                status = "Low"
+
+            st.markdown(f"""
+            <div class="metric-box">
+            <h3>Status</h3>
+            <h2>{status}</h2>
+            </div>
+            """, unsafe_allow_html=True)
 
         st.markdown('</div>', unsafe_allow_html=True)
 
         # ============================================
-        # VISUALIZATION SECTION
+        # GRAPH + GUIDANCE
         # ============================================
 
-        st.markdown('<div class="section-box">',
-        unsafe_allow_html=True)
-
-        st.header("📈 Emotion Probability Graph")
-
-        labels = encoder.classes_
-
-        prob_df = pd.DataFrame({
-            "Emotion": labels,
-            "Probability": probabilities
-        })
-
-        fig = px.bar(
-            prob_df,
-            x="Emotion",
-            y="Probability",
-            text="Probability",
-            title="Emotion Confidence Distribution"
-        )
-
-        fig.update_traces(
-            texttemplate='%{text:.2f}',
-            textposition='outside'
-        )
-
-        fig.update_layout(
-            plot_bgcolor='white',
-            paper_bgcolor='white'
-        )
-
-        st.plotly_chart(
-            fig,
-            use_container_width=True
-        )
-
-        st.markdown('</div>', unsafe_allow_html=True)
+        graph_col, guide_col = st.columns([2,1])
 
         # ============================================
-        # EMOTIONAL GUIDANCE SECTION
+        # GRAPH SECTION
         # ============================================
 
-        st.markdown('<div class="section-box">',
-        unsafe_allow_html=True)
+        with graph_col:
 
-        st.header("💡 Emotional Wellness Guidance")
+            st.markdown('<div class="card">',
+            unsafe_allow_html=True)
 
-        emotion = sentiment.lower()
+            st.header("📈 Emotion Confidence Graph")
 
-        if "sad" in emotion \
-        or "depression" in emotion \
-        or "anxiety" in emotion \
-        or "stress" in emotion:
+            labels = encoder.classes_
 
-            st.warning("""
-🌿 Take a short break and relax.
+            prob_df = pd.DataFrame({
+                "Emotion": labels,
+                "Probability": probabilities
+            })
 
-🧘 Practice meditation or deep breathing.
+            fig = px.bar(
+                prob_df,
+                x="Emotion",
+                y="Probability",
+                text="Probability",
+                color="Emotion"
+            )
 
-📞 Talk with someone you trust.
+            fig.update_traces(
+                texttemplate='%{text:.2f}',
+                textposition='outside'
+            )
 
-🚶 Go for a short walk outdoors.
+            fig.update_layout(
+                plot_bgcolor='white',
+                paper_bgcolor='white',
+                font_size=18
+            )
 
-🎵 Listen to calming music.
+            st.plotly_chart(
+                fig,
+                use_container_width=True
+            )
 
-💤 Ensure proper sleep and hydration.
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        # ============================================
+        # GUIDANCE SECTION
+        # ============================================
+
+        with guide_col:
+
+            st.markdown('<div class="card">',
+            unsafe_allow_html=True)
+
+            st.header("💡 Wellness Tips")
+
+            emotion = sentiment.lower()
+
+            if "sad" in emotion \
+            or "depression" in emotion \
+            or "anxiety" in emotion \
+            or "stress" in emotion:
+
+                st.warning("""
+🌿 Take a short break
+
+🧘 Practice meditation
+
+📞 Talk with someone you trust
+
+🚶 Go for a short walk
+
+🎵 Listen to calming music
 """)
 
-        elif "happy" in emotion \
-        or "positive" in emotion:
+            elif "happy" in emotion \
+            or "positive" in emotion:
 
-            st.success("""
-✨ Keep maintaining your positive mindset.
+                st.success("""
+✨ Maintain positivity
 
-😊 Continue healthy habits.
+🏃 Stay active
 
-🏃 Stay active and motivated.
+😊 Practice gratitude
 
-📚 Practice gratitude daily.
-
-🌟 Spread positivity around you.
+🌟 Spread positivity
 """)
 
-        else:
+            else:
 
-            st.info("""
-🌼 Maintain a balanced lifestyle.
+                st.info("""
+🌼 Maintain balance
 
-🥗 Eat healthy food.
+🥗 Eat healthy food
 
-💤 Get enough sleep.
+💤 Sleep properly
 
-🧘 Practice mindfulness regularly.
+🧘 Practice mindfulness
 """)
 
-        st.markdown('</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
 
 # ============================================
 # FOOTER
 # ============================================
 
 st.markdown("""
-<hr>
-
-<center style="color:white;">
+<div class="footer">
 Made with ❤️ using NLP, TensorFlow, SimpleRNN, and Streamlit
-</center>
+</div>
 """, unsafe_allow_html=True)
