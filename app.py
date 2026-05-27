@@ -363,9 +363,7 @@ with col2:
 
     • Sentiment Analysis<br>
 
-    • Emotion Detection<br>
-
-    • Text Classification
+    • Emotion Detection, Text Classification
 
     </div>
 
